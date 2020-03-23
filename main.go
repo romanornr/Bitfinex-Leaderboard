@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/romanornr/Bitfinex-Leaderboard/bitfinex"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -17,6 +18,7 @@ type LeaderboardData struct {
 	UnrealizedProfit float64
 	RealizedProfit   float64
 	Twitter          string
+	BitcoinPrice     float64
 	Date             time.Time
 }
 
@@ -48,12 +50,18 @@ func main() {
 		log.Fatal(err)
 	}
 
+	LastBitcoinPriceBitfinex, err := bitfinex.GetBitcoinPrice()
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	leaderboard := LeaderboardData{
 		Name:             fmt.Sprintf("%s", BitfinexLeaderboard[0][2]),
 		Rank:             BitfinexLeaderboard[0][3].(float64),
 		UnrealizedProfit: BitfinexLeaderboard[0][6].(float64),
 		RealizedProfit:   0,
 		Twitter:          fmt.Sprintf("%s", BitfinexLeaderboard[0][9]),
+		BitcoinPrice:     LastBitcoinPriceBitfinex,
 		Date:             time.Now(),
 	}
 
